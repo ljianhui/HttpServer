@@ -79,5 +79,3 @@ void Object::setParent(Object *parent)
     //插入当前对象到parent对象的子对象列表中
     _appendObjectList(parent);
 }
-
-
