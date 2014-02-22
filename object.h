@@ -12,13 +12,13 @@ class Object
     public:
         virtual ~Object();
 
-        //ÖØÐÂÉèÖÃ¶ÔÏóµÄ¸¸¶ÔÏó
+        //é‡æ–°è®¾ç½®å¯¹è±¡çš„çˆ¶å¯¹è±¡
         void setParent(Object *parent);
 
-        //»ñµÃµ±Ç°¶ÔÏóµÄ×Ó¶ÔÏóÁÐ±í
+        //èŽ·å¾—å½“å‰å¯¹è±¡çš„å­å¯¹è±¡åˆ—è¡¨
         inline const ObjectList& getChildern() const;
 
-        //»ñµÃµ±Ç°¶ÔÏóµÄ¸¸¶ÔÏó
+        //èŽ·å¾—å½“å‰å¯¹è±¡çš„çˆ¶å¯¹è±¡
         inline const Object* getParent() const;
 
     protected:
@@ -27,21 +27,21 @@ class Object
         Object& operator= (const Object &obj);
 
     private:
-        //°Ñµ±Ç°¶ÔÏó²åÈëµ½parentÖ¸ÏòµÄ¸¸¶ÔÏóµÄ×Ó¶ÔÏóÁÐ±íÖÐ
+        //æŠŠå½“å‰å¯¹è±¡æ’å…¥åˆ°parentæŒ‡å‘çš„çˆ¶å¯¹è±¡çš„å­å¯¹è±¡åˆ—è¡¨ä¸­
         inline void _appendObjectList(Object *parent);
 
-        ObjectList childern;//×Ó¶ÔÏóÁÐ±í
-        Object *this_parent;//Ö¸Ïò¶ÔÏóµÄ¸¸¶ÔÏó
+        ObjectList childern;//å­å¯¹è±¡åˆ—è¡¨
+        Object *this_parent;//æŒ‡å‘å¯¹è±¡çš„çˆ¶å¯¹è±¡
 };
 
 void Object::_appendObjectList(Object *parent)
 {
     /***
-    º¯Êý¹¦ÄÜ£º°Ñµ±Ç°¶ÔÏó²åÈëµ½parentÖ¸ÏòµÄ¸¸¶ÔÏóµÄ×Ó¶ÔÏóÁÐ±íÖÐ
-    ·µ»Ø£ºÎÞ
+    å‡½æ•°åŠŸèƒ½ï¼šæŠŠå½“å‰å¯¹è±¡æ’å…¥åˆ°parentæŒ‡å‘çš„çˆ¶å¯¹è±¡çš„å­å¯¹è±¡åˆ—è¡¨ä¸­
+    è¿”å›žï¼šæ— 
     ***/
-    this_parent = parent;//ÉèÖÃµ±Ç°¶ÔÏóµÄ¸¸¶ÔÏó
-    //ÈôÆä¸¸¶ÔÏó²»Îª¿Õ£¬Ôò¼ÓÈëµ½¸¸¶ÔÏóµÄ×Ó¶ÔÏóÁÐ±íÖÐ
+    this_parent = parent;//è®¾ç½®å½“å‰å¯¹è±¡çš„çˆ¶å¯¹è±¡
+    //è‹¥å…¶çˆ¶å¯¹è±¡ä¸ä¸ºç©ºï¼Œåˆ™åŠ å…¥åˆ°çˆ¶å¯¹è±¡çš„å­å¯¹è±¡åˆ—è¡¨ä¸­
     if(this_parent != NULL)
         this_parent->childern.push_back(this);
 }

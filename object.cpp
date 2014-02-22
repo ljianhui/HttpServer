@@ -1,12 +1,12 @@
-#include "Object.h"
+#include "object.h"
 #include <algorithm>
 
 Object::Object(Object *parent)
     :this_parent(parent)
 {
     /***
-    º¯Êı¹¦ÄÜ£º´´½¨Ò»¸öObject¶ÔÏó£¬ÈôÆäparent²»Îª¿Õ£¬
-        Ôò°Ñµ±Ç°¶ÔÏó²åÈëµ½Æä×Ó¶ÔÏóÁĞ±íÖĞ
+    å‡½æ•°åŠŸèƒ½ï¼šåˆ›å»ºä¸€ä¸ªObjectå¯¹è±¡ï¼Œè‹¥å…¶parentä¸ä¸ºç©ºï¼Œ
+        åˆ™æŠŠå½“å‰å¯¹è±¡æ’å…¥åˆ°å…¶å­å¯¹è±¡åˆ—è¡¨ä¸­
     ***/
     if(this_parent != NULL)
         this_parent->childern.push_back(this);
@@ -17,18 +17,18 @@ Object::Object(Object *parent)
 Object::Object(const Object& obj)
 {
     /***
-    º¯Êı¹¦ÄÜ£º¸ù¾İ¶ÔÏóobj£¬¸´ÖÆÒ»¸ö¶ÔÏó
+    å‡½æ•°åŠŸèƒ½ï¼šæ ¹æ®å¯¹è±¡objï¼Œå¤åˆ¶ä¸€ä¸ªå¯¹è±¡
     ***/
-    //¸´ÖÆÊ±£¬Ö»ÊÇ°Ñµ±Ç°¶ÔÏóºÍobjµÄ¸¸¶ÔÏóÉèÖÃÎªÍ¬Ò»¸ö¸¸¶ÔÏó
-    //²¢²»¸´ÖÆobjµÄ×Ó¶ÔÏóÁĞ±í
+    //å¤åˆ¶æ—¶ï¼Œåªæ˜¯æŠŠå½“å‰å¯¹è±¡å’Œobjçš„çˆ¶å¯¹è±¡è®¾ç½®ä¸ºåŒä¸€ä¸ªçˆ¶å¯¹è±¡
+    //å¹¶ä¸å¤åˆ¶objçš„å­å¯¹è±¡åˆ—è¡¨
     _appendObjectList(obj.this_parent);
 }
 
 Object& Object::operator= (const Object &obj)
 {
     /***
-    º¯Êı¹¦ÄÜ£ºÈôµ±Ç°¶ÔÏóÎŞ¸¸¶ÔÏó£¬Ôò°ÑobjµÄ¸¸¶ÔÏóÉèÖÃ³Éµ±Ç°¶ÔÏóµÄ¸¸¶ÔÏó
-    ·µ»Ø£ºµ±Ç°¶ÔÏóµÄÒıÓÃ
+    å‡½æ•°åŠŸèƒ½ï¼šè‹¥å½“å‰å¯¹è±¡æ— çˆ¶å¯¹è±¡ï¼Œåˆ™æŠŠobjçš„çˆ¶å¯¹è±¡è®¾ç½®æˆå½“å‰å¯¹è±¡çš„çˆ¶å¯¹è±¡
+    è¿”å›ï¼šå½“å‰å¯¹è±¡çš„å¼•ç”¨
     ***/
     if(this_parent == NULL)
     {
@@ -40,9 +40,9 @@ Object& Object::operator= (const Object &obj)
 Object::~Object()
 {
     /***
-    º¯Êı¹¦ÄÜ£ºÊÍ·ÅÓÉ¸Ã¶ÔÏónew³öÀ´µÄ×Ó¶ÔÏó
+    å‡½æ•°åŠŸèƒ½ï¼šé‡Šæ”¾ç”±è¯¥å¯¹è±¡newå‡ºæ¥çš„å­å¯¹è±¡
     ***/
-    //Èôµ±Ç°¶ÔÏóÓĞ¸¸¶ÔÏó£¬Ôò½«µ±Ç°¶ÔÏó´Ó¹²¸¸¶ÔÏóµÄ×Ó¶ÔÏóÁĞ±íÖĞÉ¾³ı
+    //è‹¥å½“å‰å¯¹è±¡æœ‰çˆ¶å¯¹è±¡ï¼Œåˆ™å°†å½“å‰å¯¹è±¡ä»å…±çˆ¶å¯¹è±¡çš„å­å¯¹è±¡åˆ—è¡¨ä¸­åˆ é™¤
     if(this_parent != NULL)
     {
         ObjectList::iterator it =
@@ -52,7 +52,7 @@ Object::~Object()
         this_parent->childern.erase(it);
 //        this_parent->childern.remove(this);
     }
-    //ÊÍ·ÅÆänew³öÀ´µÄ×Ó¶ÔÏó
+    //é‡Šæ”¾å…¶newå‡ºæ¥çš„å­å¯¹è±¡
     while(!childern.empty())
     {
         ObjectList::iterator it(childern.begin());
@@ -63,10 +63,10 @@ Object::~Object()
 void Object::setParent(Object *parent)
 {
     /***
-    º¯Êı¹¦ÄÜ£ºÖØĞÂÉèÖÃ¶ÔÏóµÄ¸¸¶ÔÏó
-    ·µ»Ø£ºÎŞ
+    å‡½æ•°åŠŸèƒ½ï¼šé‡æ–°è®¾ç½®å¯¹è±¡çš„çˆ¶å¯¹è±¡
+    è¿”å›ï¼šæ— 
     ***/
-    //Èôµ±Ç°¶ÔÏóÓĞ¸¸¶ÔÏó£¬Ôò°Ñµ±Ç°¶ÔÏó´ÓÆä¸¸¶ÔÏóµÄ×Ó¶ÔÏóÁĞ±íÖĞÉ¾³ı
+    //è‹¥å½“å‰å¯¹è±¡æœ‰çˆ¶å¯¹è±¡ï¼Œåˆ™æŠŠå½“å‰å¯¹è±¡ä»å…¶çˆ¶å¯¹è±¡çš„å­å¯¹è±¡åˆ—è¡¨ä¸­åˆ é™¤
     if(this_parent != NULL)
     {
         ObjectList::iterator it =
@@ -76,7 +76,8 @@ void Object::setParent(Object *parent)
         this_parent->childern.erase(it);
 //        this_parent->childern.remove(this);
     }
-    //²åÈëµ±Ç°¶ÔÏóµ½parent¶ÔÏóµÄ×Ó¶ÔÏóÁĞ±íÖĞ
+    //æ’å…¥å½“å‰å¯¹è±¡åˆ°parentå¯¹è±¡çš„å­å¯¹è±¡åˆ—è¡¨ä¸­
     _appendObjectList(parent);
 }
+
 
