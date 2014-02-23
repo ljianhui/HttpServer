@@ -8,6 +8,7 @@
 Socket::Socket(Object *parent):
     Object(parent),
     sockfd(-1),
+    clifd(-1),
     cliaddr_len(0)
 {
     bzero(&address, sizeof(address));
@@ -17,6 +18,7 @@ Socket::Socket(Object *parent):
 Socket::Socket(int domain, int type, int protocol,
                Object *parent):
     Object(parent),
+    clifd(-1),
     cliaddr_len(0)
 {
     sockfd = socket(domain, type, protocol);
@@ -24,25 +26,33 @@ Socket::Socket(int domain, int type, int protocol,
     bzero(&cliaddr, sizeof(cliaddr));
 }
 
-Socket::Socket(const Socket &socket)
+Socket::Socket(const Socket &socket):
+    Object(socket)
 {
     sockfd = socket.sockfd;
     address = socket.address;
     cliaddr = socket.cliaddr;
     cliaddr_len = socket.cliaddr_len;
+    clifd = socket.clifd;
 }
 
 Socket& Socket::operator=(const Socket &socket)
 {
-    ::close(sockfd);
-    sockfd = socket.sockfd;
-    address = socket.address;
+    if(this != &socket)
+    {
+        Object::operator=(socket);
+
+        close(sockfd);
+        sockfd = socket.sockfd;
+        address = socket.address;
+        clifd = socket.clifd;
+    }
     return *this;
 }
 
 Socket::~Socket()
 {
-    close();
+    closeServer();
 }
 
 void Socket::initSocket(int domain, int type, int protocol)
@@ -65,7 +75,8 @@ int Socket::listen(int backlog)
 
 int Socket::accept()
 {
-    return ::accept(sockfd, (struct sockaddr*)&cliaddr, &cliaddr_len);
+    clifd = ::accept(sockfd, (struct sockaddr*)&cliaddr, &cliaddr_len);
+    return clifd;
 }
 
 int Socket::connect()
@@ -73,9 +84,14 @@ int Socket::connect()
     return ::connect(sockfd, (struct sockaddr*)&address, sizeof(address));
 }
 
-void Socket::close()
+int Socket::closeServer()
 {
-    ::close(sockfd);
+    return close(sockfd);
+}
+
+int Socket::closeClient()
+{
+    return close(clifd);
 }
 
 void Socket::setSocketAddress(short int family, unsigned short int port,
@@ -92,4 +108,24 @@ void Socket::setSocketAddress(short int family, unsigned short int port,
     address.sin_family = family;
     address.sin_port = htons(port);
     address.sin_addr.s_addr = htonl(addr);
+}
+
+int Socket::sendToServer(const char *data, int data_size)
+{
+    return write(sockfd, data, data_size);
+}
+
+int Socket::receiveFromServer(char *buffer, int buff_size)
+{
+    return read(sockfd, buffer, buff_size);
+}
+
+int Socket::sendToClient(const char *data, int data_size)
+{
+    return write(clifd, data, data_size);
+}
+
+int Socket::receiveFromClient(char *buffer, int buff_size)
+{
+    return read(clifd, buffer, buff_size);
 }

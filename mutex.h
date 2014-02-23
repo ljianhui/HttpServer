@@ -9,7 +9,7 @@ class Mutex: public Object
     public:
         Mutex(Object *parent = NULL);
         Mutex(const pthread_mutexattr_t *mutexattr, Object *parent = NULL);
-        ~Mutex();
+        virtual ~Mutex();
 
         int lock();
         int unlock();

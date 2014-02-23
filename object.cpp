@@ -30,9 +30,12 @@ Object& Object::operator= (const Object &obj)
     函数功能：若当前对象无父对象，则把obj的父对象设置成当前对象的父对象
     返回：当前对象的引用
     ***/
-    if(this_parent == NULL)
+    if(this != &obj)
     {
-        _appendObjectList(obj.this_parent);
+    	if(this_parent == NULL)
+    	{
+        	_appendObjectList(obj.this_parent);
+    	}
     }
     return *this;
 }
