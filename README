@@ -1,0 +1,19 @@
+程序名：MyHttpServer
+
+程序的开发环境：Linux 2.6.32 + g++ 4.4 
+
+程序的类图如下：
+Object
+  |------Mutex
+  |
+  |------Thread
+  |
+  |------Socket------TcpSocket------Http
+  |
+  |------HttpHeader
+  |          |
+  |          |------HttpRequestHeader
+  |          |
+  |          |------HttpResponseHeader
+  |
+  |
