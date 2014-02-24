@@ -12,6 +12,7 @@ class Mutex: public Object
         virtual ~Mutex();
 
         int lock();
+        int tryLock();
         int unlock();
     private:
         Mutex(const Mutex &mutex){}

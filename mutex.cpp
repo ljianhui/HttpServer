@@ -33,10 +33,16 @@ int Mutex::lock()
     {
         return pthread_mutex_lock(&mutex);
     }
-    else
+    return -1;
+}
+
+int Mutex::tryLock()
+{
+    if(flag == 0)
     {
-        return -1;
+//        return pthread_mutex_trylock(&mutex);
     }
+    return -1;
 }
 
 int Mutex::unlock()
@@ -45,8 +51,5 @@ int Mutex::unlock()
     {
         return pthread_mutex_lock(&mutex);
     }
-    else
-    {
-        return -1;
-    }
+    return -1;
 }
