@@ -1,4 +1,5 @@
 #include "mutex.h"
+#include <pthread.h>
 #include <stdio.h>
 
 Mutex::Mutex(Object *parent):
@@ -40,7 +41,8 @@ int Mutex::tryLock()
 {
     if(flag == 0)
     {
-//        return pthread_mutex_trylock(&mutex);
+        int res = pthread_mutex_trylock(&mutex);
+        return res;
     }
     return -1;
 }

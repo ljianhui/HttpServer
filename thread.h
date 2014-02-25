@@ -7,18 +7,19 @@
 class Thread : public Object
 {
     public:
+        friend void* Run(void *arg);
         Thread(Object *parent = NULL);
-        Thread(void *arg, Object *parent = NULL);
         virtual ~Thread();
 
-        void exit(int exit_code = 0);
-        int wait();
-        int cancel();
-        bool isRunning();
-        bool isFinished();
+        inline void exit(int exit_code = 0);
+        inline int wait();
+        inline int cancel();
+        inline bool isRunning();
+        inline bool isFinished();
+        inline void* getThreadReturn();
 
-        bool operator==(const Thread &trd);
-        bool operator!=(const Thread &trd);
+        inline bool operator==(const Thread &trd);
+        inline bool operator!=(const Thread &trd);
 
     protected:
         virtual void run();
@@ -27,11 +28,57 @@ class Thread : public Object
         Thread(const Thread &trd){}
         Thread& operator=(const Thread &trd){return *this;}
 
-        void __run();
-
         pthread_t tid;
-        bool is_running;
-        int push_count;
+        int flag;
+        volatile bool is_running;
+        void *tret;
 };
+
+void Thread::exit(int exit_code)
+{
+    if(flag == 0)
+        pthread_exit((void*) exit_code);
+}
+
+int Thread::cancel()
+{
+    if(flag == 0)
+        return pthread_cancel(tid);
+    return -1;
+}
+
+int Thread::wait()
+{
+    if(flag == 0)
+        return pthread_join(tid, &tret);
+    return -1;
+}
+
+bool Thread::isRunning()
+{
+    return is_running;
+}
+
+bool Thread::isFinished()
+{
+    return !is_running;
+}
+
+void* Thread::getThreadReturn()
+{
+    return tret;
+}
+
+bool Thread::operator==(const Thread &trd)
+{
+    if(pthread_equal(tid, trd.tid) != 0)
+        return true;
+    return false;
+}
+
+bool Thread::operator!=(const Thread &trd)
+{
+    return !operator==(trd);
+}
 
 #endif // THREAD_H_INCLUDED
