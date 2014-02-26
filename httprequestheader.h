@@ -1,13 +1,17 @@
 #ifndef HTTPREQUESTHEADER_H_INCLUDED
 #define HTTPREQUESTHEADER_H_INCLUDED
 
-//class HttpRequestHeader: public Object
-//{
-//    public:
-//        HttpRequestHeader(Object *parent = NULL);
-//        HttpRequestHeader(const HttpRequest &hrt);
-//        HttpRequestHeader& operator=(const HttpRequest &hrt);
-//        virtual ~HttpRequestHeader();
-//};
+#include "httpheader.h"
+
+class HttpRequestHeader : public HttpHeader
+{
+    public:
+        enum Methods
+        {
+            NONE, GET, POST, HEAD, PUT, DELETE
+        };
+    private:
+        Methods method;
+};
 
 #endif // HTTPREQUESTHEADER_H_INCLUDED

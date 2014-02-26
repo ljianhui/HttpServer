@@ -4,6 +4,8 @@
 #include "socket.h"
 #include "thread.h"
 #include "tcpsocket.h"
+#include "httpheader.h"
+#include "httprequestheader.h"
 
 using namespace std;
 

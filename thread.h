@@ -14,9 +14,9 @@ class Thread : public Object
         inline void exit(int exit_code = 0);
         inline int wait();
         inline int cancel();
-        inline bool isRunning();
-        inline bool isFinished();
-        inline void* getThreadReturn();
+        inline bool isRunning() const;
+        inline bool isFinished() const;
+        inline void* getThreadReturn() const;
 
         inline bool operator==(const Thread &trd);
         inline bool operator!=(const Thread &trd);
@@ -54,17 +54,17 @@ int Thread::wait()
     return -1;
 }
 
-bool Thread::isRunning()
+bool Thread::isRunning() const
 {
     return is_running;
 }
 
-bool Thread::isFinished()
+bool Thread::isFinished() const
 {
     return !is_running;
 }
 
-void* Thread::getThreadReturn()
+void* Thread::getThreadReturn() const
 {
     return tret;
 }
