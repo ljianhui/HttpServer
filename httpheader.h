@@ -6,29 +6,25 @@
 #include <list>
 
 using std::string;
-using std::list;
-
-typedef list<string> StringList;
 
 class HttpHeader : public Object
 {
     public:
         HttpHeader(Object *parent = NULL);
         HttpHeader(const HttpHeader &header);
-        HttpHeader(const string &head);
-        HttpHeader(const char *head);
+        HttpHeader(const string &header, Object *parent = NULL);
+        HttpHeader(const char *header, Object *parent = NULL);
         HttpHeader& operator=(const HttpHeader &header);
         virtual ~HttpHeader();
 
-        void setVersion(const string &ver);
         void addValue(const string &key, const string &value);
         void setValue(const string &key, const string &new_value);
         void setContentLength(int len);
         void setContentType(const string &type);
 
-        string getVersion() const;
-        int getMajorVersion() const;
-        int getMinorVersion() const;
+        virtual string getVersion() const = 0;
+        virtual int getMajorVersion() const = 0;
+        virtual int getMinorVersion() const = 0;
         string getValue(const string &key) const;
         const StringList& getAllValues() const;
         const StringList& getKeys() const;
@@ -41,18 +37,16 @@ class HttpHeader : public Object
         bool hasKey(const string &key) const;
 
         void removeValue(const string &key);
-        virtual string toString()const;
-
-    protected:
-        const char* getContent();
+        virtual string toString() const;
 
     private:
-        string version;
-        char *content;
-        int content_len;
-        string content_type;
-        list<string> keys;
-        list<string> values;
+        void _cstringToHttpheader(const char *header);
+        void _assign(const HttpHeader &header);
+        std::list<string>::iterator _findValue(const string &key);
+
+        bool is_vaild;
+        std::list<string> keys;
+        std::list<string> values;
 };
 
 #endif // HTTPHEAD_H_INCLUDED
