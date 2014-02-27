@@ -26,12 +26,12 @@ class HttpHeader : public Object
         virtual int getMajorVersion() const = 0;
         virtual int getMinorVersion() const = 0;
         string getValue(const string &key) const;
-        const StringList& getAllValues() const;
-        const StringList& getKeys() const;
+        inline const std::list<string>& getAllValues() const;
+        inline const std::list<string>& getAllKeys() const;
         int getContentLength() const;
         string getContentType() const;
 
-        bool isVaild() const;
+        inline bool isVaild() const;
         bool hasContentLength() const;
         bool hasContentType() const;
         bool hasKey(const string &key) const;
@@ -39,14 +39,32 @@ class HttpHeader : public Object
         void removeValue(const string &key);
         virtual string toString() const;
 
-    private:
+    protected:
         void _cstringToHttpheader(const char *header);
+
+    private:
         void _assign(const HttpHeader &header);
         std::list<string>::iterator _findValue(const string &key);
+        std::list<string>::const_iterator _findValueConst(const string &key) const;
 
         bool is_vaild;
         std::list<string> keys;
         std::list<string> values;
 };
+
+const std::list<string>& HttpHeader::getAllValues()const
+{
+    return values;
+}
+
+const std::list<string>& HttpHeader::getAllKeys()const
+{
+    return keys;
+}
+
+bool HttpHeader::isVaild()const
+{
+    return is_vaild;
+}
 
 #endif // HTTPHEAD_H_INCLUDED
