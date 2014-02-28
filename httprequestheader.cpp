@@ -22,6 +22,24 @@ HttpRequestHeader::HttpRequestHeader(const string &method, const string &url,
 HttpRequestHeader::HttpRequestHeader(const string &header, HttpHeader *parent):
     HttpHeader(parent)
 {
+    string math(" ");
+    int begin_pos = 0;
+    int end_pos = header.find(math, begin_pos);
+    req_method = header.substr(begin_pos, end_pos-begin_pos);
+    begin_pos = end_pos + 1;
+    end_pos = header.find(math, begin_pos);
+    req_url = header.substr(begin_pos, end_pos-begin_pos);
+
+    math = "\r\n";
+    begin_pos = end_pos + 1;
+    end_pos = header.find(math, begin_pos);
+    version = header.substr(begin_pos, end_pos - begin_pos);
+
+    math = "\\";
+    begin_pos = 0;
+    end_pos = version.find(math, begin_pos);
+    begin_pos = end_pos + 1;
+    math = ".";
 
 }
 

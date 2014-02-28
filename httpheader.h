@@ -41,6 +41,7 @@ class HttpHeader : public Object
 
     protected:
         void _cstringToHttpheader(const char *header);
+        inline void _setVaild(bool vaild);
 
     private:
         void _assign(const HttpHeader &header);
@@ -65,6 +66,11 @@ const std::list<string>& HttpHeader::getAllKeys()const
 bool HttpHeader::isVaild()const
 {
     return is_vaild;
+}
+
+void HttpHeader::_setVaild(bool vaild)
+{
+    is_vaild = vaild;
 }
 
 #endif // HTTPHEAD_H_INCLUDED

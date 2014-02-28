@@ -32,6 +32,7 @@ class HttpRequestHeader : public HttpHeader
     private:
         string req_method;
         string req_url;
+        string version;
         int major_ver;
         int minor_ver;
 };
