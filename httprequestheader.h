@@ -9,17 +9,17 @@ using std::string;
 class HttpRequestHeader : public HttpHeader
 {
     public:
-        HttpRequestHeader(HttpHeader *parent = NULL);
+        HttpRequestHeader(Object *parent = NULL);
         HttpRequestHeader(const string &method, const string &url,
                           int major_version, int minor_version,
-                          HttpHeader *parent = NULL);
-        HttpRequestHeader(const string &header, HttpHeader *parent = NULL);
+                          Object *parent = NULL);
+        HttpRequestHeader(const string &header, Object *parent = NULL);
         HttpRequestHeader(const HttpRequestHeader &header);
         HttpRequestHeader& operator=(const HttpRequestHeader &header);
         virtual ~HttpRequestHeader(){}
 
-        string getMethod()const;
-        string getUrl()const;
+        inline string getMethod()const;
+        inline string getUrl()const;
 
         virtual string getVersion()const;
         virtual int getMajorVersion()const;
@@ -30,11 +30,23 @@ class HttpRequestHeader : public HttpHeader
 
         virtual string toString()const;
     private:
+        void _assignRequest(const HttpRequestHeader &header);
+
         string req_method;
         string req_url;
         string version;
         int major_ver;
         int minor_ver;
 };
+
+string HttpRequestHeader::getMethod()const
+{
+    return req_method;
+}
+
+string HttpRequestHeader::getUrl()const
+{
+    return req_url;
+}
 
 #endif // HTTPREQUESTHEADER_H_INCLUDED

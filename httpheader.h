@@ -42,6 +42,10 @@ class HttpHeader : public Object
     protected:
         void _cstringToHttpheader(const char *header);
         inline void _setVaild(bool vaild);
+        int _setString(const string &txt, const string &div,
+                       int begin_pos, string &dest);
+        void _versionToInt(const string &version, int &major, int &minor);
+        string _intToVersion(int major, int minor);
 
     private:
         void _assign(const HttpHeader &header);

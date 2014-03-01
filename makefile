@@ -35,5 +35,6 @@ httpheader.o: httpheader.cpp httpheader.h object.h
 
 httprequestheader.o: httprequestheader.cpp httprequestheader.h httpheader.h
 	$(CC) -c httprequestheader.cpp
+
 clean:
 	-rm -f *.o

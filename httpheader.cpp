@@ -31,45 +31,6 @@ HttpHeader::HttpHeader(const string &header, Object *parent):
     _cstringToHttpheader(header.c_str());
 }
 
-void HttpHeader::_cstringToHttpheader(const char *header)
-{
-    char div[] = ":";
-    char end[] = "\r\n";
-    while(*header != '\r')
-    {
-        const char *str = strstr(header, div);
-        if(str == NULL || *(str+1) != ' ')
-        {
-            is_vaild = false;
-            break;
-        }
-        int char_count = str - header;
-        string key(header, char_count);
-        keys.push_back(key);
-
-        header = str + 2;
-        str = strstr(header, end);
-        if(str == NULL)
-        {
-            is_vaild = false;
-            break;
-        }
-        char_count = str - header;
-        string value(header, char_count);
-        values.push_back(value);
-
-        header = str + 2;
-    }
-    is_vaild = true;
-}
-
-void HttpHeader::_assign(const HttpHeader &header)
-{
-    is_vaild = header.is_vaild;
-    keys = header.keys;
-    values = header.values;
-}
-
 HttpHeader& HttpHeader::operator=(const HttpHeader &header)
 {
     if(this != &header)
@@ -255,4 +216,75 @@ string HttpHeader::toString() const
     }
     header += end;
     return header;
+}
+
+void HttpHeader::_cstringToHttpheader(const char *header)
+{
+    char div[] = ":";
+    char end[] = "\r\n";
+    while(*header != '\r')
+    {
+        const char *str = strstr(header, div);
+        if(str == NULL || *(str+1) != ' ')
+        {
+            is_vaild = false;
+            break;
+        }
+        int char_count = str - header;
+        string key(header, char_count);
+        keys.push_back(key);
+
+        header = str + 2;
+        str = strstr(header, end);
+        if(str == NULL)
+        {
+            is_vaild = false;
+            break;
+        }
+        char_count = str - header;
+        string value(header, char_count);
+        values.push_back(value);
+
+        header = str + 2;
+    }
+    is_vaild = true;
+}
+
+void HttpHeader::_assign(const HttpHeader &header)
+{
+    is_vaild = header.is_vaild;
+    keys = header.keys;
+    values = header.values;
+}
+
+int HttpHeader::_setString(const string &txt, const string &div,
+                                  int begin_pos, string &dest)
+{
+    int end_pos = txt.find(div, begin_pos);
+    dest = txt.substr(begin_pos, end_pos-begin_pos);
+    begin_pos = end_pos + div.length();
+    return begin_pos;
+}
+
+void HttpHeader::_versionToInt(const string &version,
+                                      int &major, int &minor)
+{
+    string math = "/";
+    string tmp;
+    int begin_pos = _setString(version, math, 0, tmp);//tmp = "HTTP"
+    math = ".";
+    begin_pos = _setString(version, math, begin_pos, tmp);//tmp = "1"
+    major = atoi(tmp.c_str());
+    math = "\r\n";
+    begin_pos = _setString(version, math, begin_pos, tmp);//tmp = "1"
+    minor = atoi(tmp.c_str());
+}
+
+string HttpHeader::_intToVersion(int major, int minor)
+{
+    char tmp[20] = {'\0'};
+    string version = "HTTP/";
+    sprintf(tmp, "%d.%d", major, minor);
+    version += tmp;
+    return version;
 }

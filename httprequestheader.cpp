@@ -1,84 +1,104 @@
 #include "httprequestheader.h"
 #include <stdio.h>
+#include <stdlib.h>
 
-HttpRequestHeader::HttpRequestHeader(HttpHeader *parent):
+HttpRequestHeader::HttpRequestHeader(Object *parent):
     HttpHeader(parent),
     major_ver(1),
     minor_ver(1)
 {
+    version = _intToVersion(major_ver, minor_ver);
 }
 
 HttpRequestHeader::HttpRequestHeader(const string &method, const string &url,
                                      int major_version, int minor_version,
-                                     HttpHeader *parent):
+                                     Object *parent):
     HttpHeader(parent),
     req_method(method),
     req_url(url),
     major_ver(major_version),
     minor_ver(minor_version)
 {
+    version = _intToVersion(major_ver, minor_ver);
 }
 
-HttpRequestHeader::HttpRequestHeader(const string &header, HttpHeader *parent):
+void HttpRequestHeader::_assignRequest(const HttpRequestHeader &header)
+{
+    req_method = header.req_method;
+    req_url = header.req_url;
+    version = header.version;
+    major_ver = header.major_ver;
+    minor_ver = header.minor_ver;
+}
+
+
+
+HttpRequestHeader::HttpRequestHeader(const string &header, Object *parent):
     HttpHeader(parent)
 {
     string math(" ");
     int begin_pos = 0;
-    int end_pos = header.find(math, begin_pos);
-    req_method = header.substr(begin_pos, end_pos-begin_pos);
-    begin_pos = end_pos + 1;
-    end_pos = header.find(math, begin_pos);
-    req_url = header.substr(begin_pos, end_pos-begin_pos);
-
+    begin_pos = _setString(header, math, begin_pos, req_method);
+    begin_pos = _setString(header, math, begin_pos, req_url);
     math = "\r\n";
-    begin_pos = end_pos + 1;
-    end_pos = header.find(math, begin_pos);
-    version = header.substr(begin_pos, end_pos - begin_pos);
+    begin_pos = _setString(header, math, begin_pos, version);//version = "HTTP/1.1"
 
-    math = "\\";
-    begin_pos = 0;
-    end_pos = version.find(math, begin_pos);
-    begin_pos = end_pos + 1;
-    math = ".";
+    _cstringToHttpheader(header.c_str() + begin_pos);
+
+    _versionToInt(version, major_ver, minor_ver);
 
 }
 
 HttpRequestHeader::HttpRequestHeader(const HttpRequestHeader &header):
     HttpHeader(header)
 {
-
+    _assignRequest(header);
 }
 
 HttpRequestHeader& HttpRequestHeader::operator=(const HttpRequestHeader &header)
 {
-
+    if(this != &header)
+    {
+        _assignRequest(header);
+    }
+    return *this;
 }
 
 string HttpRequestHeader::getVersion()const
 {
+    return version;
 }
 
 int HttpRequestHeader::getMajorVersion()const
 {
+    return major_ver;
 }
 
 int HttpRequestHeader::getMinorVersion()const
 {
-}
-
-string HttpRequestHeader::getMethod()const
-{
-}
-
-string HttpRequestHeader::getUrl()const
-{
+    return minor_ver;
 }
 
 void HttpRequestHeader::setRequest(const string &method, const string &url,
                                    int major_version, int minor_version)
 {
+    req_method = method;
+    req_url = url;
+    major_ver = major_version;
+    minor_ver = minor_version;
+    version = _intToVersion(major_ver, minor_ver);
 }
 
 string HttpRequestHeader::toString()const
 {
+    string header;
+    string div(" ");
+    header += req_method;
+    header += div;
+    header += req_url;
+    header += div;
+    header += version;
+    header += "\r\n";
+    header += HttpHeader::toString();
+    return header;
 }
