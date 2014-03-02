@@ -1,12 +1,12 @@
 #include "tcpsocket.h"
 
-TcpSocket::TcpSocket(Socket *parent):
+TcpSocket::TcpSocket(Object *parent):
     Socket(AF_INET, SOCK_STREAM, 0, parent)
 {
     ;
 }
 
-TcpSocket::TcpSocket(int protocotol, Socket *parent):
+TcpSocket::TcpSocket(int protocotol, Object *parent):
     Socket(AF_INET, SOCK_STREAM, protocotol, parent)
 {
     ;

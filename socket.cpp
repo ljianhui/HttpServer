@@ -7,33 +7,27 @@
 
 Socket::Socket(Object *parent):
     Object(parent),
-    sockfd(-1),
-    clifd(-1),
-    cliaddr_len(0)
+    local_sockfd(-1),
+    peer_sockfd(-1)
 {
-    bzero(&address, sizeof(address));
-    bzero(&cliaddr, sizeof(cliaddr));
+    bzero(&local_addr, sizeof(local_addr));
+    bzero(&peer_addr, sizeof(peer_addr));
 }
 
 Socket::Socket(int domain, int type, int protocol,
                Object *parent):
     Object(parent),
-    clifd(-1),
-    cliaddr_len(0)
+    peer_sockfd(-1)
 {
-    sockfd = socket(domain, type, protocol);
-    bzero(&address, sizeof(address));
-    bzero(&cliaddr, sizeof(cliaddr));
+    local_sockfd = socket(domain, type, protocol);
+    bzero(&local_addr, sizeof(local_addr));
+    bzero(&peer_addr, sizeof(peer_addr));
 }
 
 Socket::Socket(const Socket &socket):
     Object(socket)
 {
-    sockfd = socket.sockfd;
-    address = socket.address;
-    cliaddr = socket.cliaddr;
-    cliaddr_len = socket.cliaddr_len;
-    clifd = socket.clifd;
+    _assign(socket);
 }
 
 Socket& Socket::operator=(const Socket &socket)
@@ -42,90 +36,92 @@ Socket& Socket::operator=(const Socket &socket)
     {
         Object::operator=(socket);
 
-        close(sockfd);
-        sockfd = socket.sockfd;
-        address = socket.address;
-        clifd = socket.clifd;
+        if(local_sockfd != -1)
+            close(local_sockfd);
+        _assign(socket);
     }
     return *this;
 }
 
 Socket::~Socket()
 {
-    closeServer();
+    if(peer_sockfd != -1 && peer_sockfd != local_sockfd)
+        close(peer_sockfd);
+    close(local_sockfd);
 }
 
 void Socket::initSocket(int domain, int type, int protocol)
 {
-    if(sockfd != -1)
+    if(local_sockfd != -1)
     {
-        sockfd = socket(domain, type, protocol);
+        local_sockfd = socket(domain, type, protocol);
     }
 }
 
 int Socket::bind()
 {
-    return ::bind(sockfd, (struct sockaddr*)&address, sizeof(address));
+    return ::bind(local_sockfd,
+                  (struct sockaddr*)&local_addr,
+                  sizeof(local_addr));
 }
 
 int Socket::listen(int backlog)
 {
-    return ::listen(sockfd, backlog);
+    return ::listen(local_sockfd, backlog);
 }
 
-int Socket::accept()
+int Socket::accept(Socket &acc_sock)
 {
-    clifd = ::accept(sockfd, (struct sockaddr*)&cliaddr, &cliaddr_len);
-    return clifd;
+    bzero(&acc_sock, sizeof(acc_sock));
+    acc_sock.local_sockfd = -1;
+
+    socklen_t peer_addr_len = sizeof(peer_addr);
+
+    peer_sockfd = ::accept(local_sockfd,
+                           (struct sockaddr*)&acc_sock.peer_addr,
+                           &peer_addr_len);
+    acc_sock.peer_sockfd = peer_sockfd;
+    return peer_sockfd;
 }
 
-int Socket::connect()
+int Socket::connectToHost()
 {
-    return ::connect(sockfd, (struct sockaddr*)&address, sizeof(address));
+    int res = connect(local_sockfd,
+                      (struct sockaddr*)&local_addr,
+                      sizeof(local_addr));
+    if(peer_sockfd != -1 && peer_sockfd != local_sockfd)
+        close(peer_sockfd);
+    peer_sockfd = local_sockfd;
+    return res;
 }
 
-int Socket::closeServer()
+int Socket::closeSocket()
 {
-    return close(sockfd);
-}
-
-int Socket::closeClient()
-{
-    return close(clifd);
+    int res = close(local_sockfd);
+    local_sockfd = -1;
+    return res;
 }
 
 void Socket::setSocketAddress(short int family, unsigned short int port,
                               const char *hostname)
 {
-    address.sin_family = family;
-    address.sin_port = htons(port);
-    inet_pton(family, hostname, &address.sin_addr);
+    local_addr.sin_family = family;
+    local_addr.sin_port = htons(port);
+    inet_pton(family, hostname, &local_addr.sin_addr);
 }
 
 void Socket::setSocketAddress(short int family, unsigned short int port,
                               unsigned long int addr)
 {
-    address.sin_family = family;
-    address.sin_port = htons(port);
-    address.sin_addr.s_addr = htonl(addr);
+    local_addr.sin_family = family;
+    local_addr.sin_port = htons(port);
+    local_addr.sin_addr.s_addr = htonl(addr);
 }
 
-int Socket::sendToServer(const char *data, int data_size)
+void Socket::_assign(const Socket &socket)
 {
-    return write(sockfd, data, data_size);
-}
-
-int Socket::receiveFromServer(char *buffer, int buff_size)
-{
-    return read(sockfd, buffer, buff_size);
-}
-
-int Socket::sendToClient(const char *data, int data_size)
-{
-    return write(clifd, data, data_size);
-}
-
-int Socket::receiveFromClient(char *buffer, int buff_size)
-{
-    return read(clifd, buffer, buff_size);
+    local_sockfd = socket.local_sockfd;
+    local_addr = socket.local_addr;
+    peer_sockfd = socket.peer_sockfd;
+    peer_addr = socket.peer_addr;
 }
