@@ -7,21 +7,17 @@
 
 Socket::Socket(Object *parent):
     Object(parent),
-    local_sockfd(-1),
-    peer_sockfd(-1)
+    local_sockfd(-1)
 {
-    bzero(&local_addr, sizeof(local_addr));
-    bzero(&peer_addr, sizeof(peer_addr));
+    bzero(&address, sizeof(address));
 }
 
 Socket::Socket(int domain, int type, int protocol,
                Object *parent):
-    Object(parent),
-    peer_sockfd(-1)
+    Object(parent)
 {
     local_sockfd = socket(domain, type, protocol);
-    bzero(&local_addr, sizeof(local_addr));
-    bzero(&peer_addr, sizeof(peer_addr));
+    bzero(&address, sizeof(address));
 }
 
 Socket::Socket(const Socket &socket):
@@ -45,9 +41,8 @@ Socket& Socket::operator=(const Socket &socket)
 
 Socket::~Socket()
 {
-    if(peer_sockfd != -1 && peer_sockfd != local_sockfd)
-        close(peer_sockfd);
-    close(local_sockfd);
+    if(local_sockfd != -1)
+        close(local_sockfd);
 }
 
 void Socket::initSocket(int domain, int type, int protocol)
@@ -61,8 +56,8 @@ void Socket::initSocket(int domain, int type, int protocol)
 int Socket::bind()
 {
     return ::bind(local_sockfd,
-                  (struct sockaddr*)&local_addr,
-                  sizeof(local_addr));
+                  (struct sockaddr*)&address,
+                  sizeof(address));
 }
 
 int Socket::listen(int backlog)
@@ -75,53 +70,48 @@ int Socket::accept(Socket &acc_sock)
     bzero(&acc_sock, sizeof(acc_sock));
     acc_sock.local_sockfd = -1;
 
-    socklen_t peer_addr_len = sizeof(peer_addr);
-
-    peer_sockfd = ::accept(local_sockfd,
-                           (struct sockaddr*)&acc_sock.peer_addr,
-                           &peer_addr_len);
-    acc_sock.peer_sockfd = peer_sockfd;
-    return peer_sockfd;
+    acc_sock.local_sockfd = ::accept(local_sockfd, NULL, NULL);
+    return acc_sock.local_sockfd;
 }
 
 int Socket::connectToHost()
 {
     int res = connect(local_sockfd,
-                      (struct sockaddr*)&local_addr,
-                      sizeof(local_addr));
-    if(peer_sockfd != -1 && peer_sockfd != local_sockfd)
-        close(peer_sockfd);
-    peer_sockfd = local_sockfd;
+                      (struct sockaddr*)&address,
+                      sizeof(address));
     return res;
 }
 
 int Socket::closeSocket()
 {
-    int res = close(local_sockfd);
-    local_sockfd = -1;
+    int res = 0;
+    if(local_sockfd != -1)
+    {
+        res = close(local_sockfd);
+        local_sockfd = -1;
+        return res;
+    }
     return res;
 }
 
 void Socket::setSocketAddress(short int family, unsigned short int port,
                               const char *hostname)
 {
-    local_addr.sin_family = family;
-    local_addr.sin_port = htons(port);
-    inet_pton(family, hostname, &local_addr.sin_addr);
+    address.sin_family = family;
+    address.sin_port = htons(port);
+    inet_pton(family, hostname, &address.sin_addr);
 }
 
 void Socket::setSocketAddress(short int family, unsigned short int port,
                               unsigned long int addr)
 {
-    local_addr.sin_family = family;
-    local_addr.sin_port = htons(port);
-    local_addr.sin_addr.s_addr = htonl(addr);
+    address.sin_family = family;
+    address.sin_port = htons(port);
+    address.sin_addr.s_addr = htonl(addr);
 }
 
 void Socket::_assign(const Socket &socket)
 {
     local_sockfd = socket.local_sockfd;
-    local_addr = socket.local_addr;
-    peer_sockfd = socket.peer_sockfd;
-    peer_addr = socket.peer_addr;
+    address = socket.address;
 }

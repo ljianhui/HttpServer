@@ -30,65 +30,67 @@ class Socket: public Object
         void setSocketAddress(short int family, unsigned short int port,
                               unsigned long int address);
 
-        inline int sendData(const char *data, int data_size);
-        inline int receiveData(char *buffer, int buff_size);
+        inline int sendData(const char *data, int data_size)const;
+        inline int receiveData(char *buffer, int buff_size)const;
 
-        inline int getLocalSocket()const;
-        inline int getPeerSocket()const;
-        inline short int getLocalPort()const;
-        inline short int getPeerPort()const;
+        inline short int getLocalPort();
+        inline short int getPeerPort();
 
-        inline const sockaddr* getPeerAddress()const;
-        inline const sockaddr* getLocalAddress()const;
+        inline const sockaddr* getPeerAddress(int *len = NULL);
+        inline const sockaddr* getLocalAddress(int *len = NULL);
 
     private:
         void _assign(const Socket &socket);
 
         int local_sockfd;
-        struct sockaddr_in local_addr;
-
-        int peer_sockfd;
-        struct sockaddr_in peer_addr;
+        struct sockaddr_in address;
 };
 
-int Socket::sendData(const char *data, int data_size)
+int Socket::sendData(const char *data, int data_size)const
 {
-    return write(peer_sockfd, data, data_size);
+    return write(local_sockfd, data, data_size);
 }
 
-int Socket::receiveData(char *buffer, int buff_size)
+int Socket::receiveData(char *buffer, int buff_size)const
 {
-    return read(peer_sockfd, buffer, buff_size);
+    return read(local_sockfd, buffer, buff_size);
 }
 
-int Socket::getLocalSocket()const
+short int Socket::getLocalPort()
 {
-    return local_sockfd;
+    socklen_t addr_len = sizeof(address);
+    int res = getsockname(local_sockfd, (sockaddr*)&address, &addr_len);
+    if(res == 0)
+        return ntohs(address.sin_port);
+    return -1;
 }
 
-int Socket::getPeerSocket()const
+short int Socket::getPeerPort()
 {
-    return peer_sockfd;
+    socklen_t addr_len = sizeof(address);
+    int res = getpeername(local_sockfd, (sockaddr*)&address, &addr_len);
+    if(res == 0)
+        return ntohs(address.sin_port);
+    return -1;
 }
 
-short int Socket::getLocalPort()const
+const sockaddr* Socket::getLocalAddress(int *len)
 {
-    return ntohs(local_addr.sin_port);
+    socklen_t addr_len = sizeof(address);
+    int res = getsockname(local_sockfd, (sockaddr*)&address, &addr_len);
+    if(res == 0)
+        return (const sockaddr*)&address;
+    return NULL;
 }
 
-short int Socket::getPeerPort()const
+const sockaddr* Socket::getPeerAddress(int *len)
 {
-    return ntohs(peer_addr.sin_port);
+    socklen_t addr_len = sizeof(address);
+    int res = getpeername(local_sockfd, (sockaddr*)&address, &addr_len);
+    if(res == 0)
+        return (const sockaddr*)&address;
+    return NULL;
 }
 
-const sockaddr* Socket::getLocalAddress()const
-{
-    return (const sockaddr*)&local_addr;
-}
-
-const sockaddr* Socket::getPeerAddress()const
-{
-    return (const sockaddr*)&peer_addr;
-}
 
 #endif // SOCKET_H_INCLUDED
