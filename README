@@ -1,6 +1,6 @@
 程序名：MyHttpServer
 
-程序的开发环境：Linux 2.6.32 + g++ 4.4 
+程序的开发环境：Linux 2.6.32 + g++ 4.4.7 
 
 程序的类图如下：
 Object
@@ -8,7 +8,9 @@ Object
   |
   |------Thread
   |
-  |------Socket------TcpSocket------Http
+  |------Socket------TcpSocket
+  |
+  |------Http
   |
   |------HttpHeader
   |          |

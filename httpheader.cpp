@@ -93,12 +93,17 @@ void HttpHeader::setContentLength(int len)
         if(it == values.end())
             it = _findValue("content-length");
     }
+    char tmp[11] = {'\0'};
+    sprintf(tmp, "%d", len);
+    string num(tmp);
     if(it != values.end())
     {
-        char tmp[11] = {'\0'};
-        sprintf(tmp, "%d", len);
-        string num(tmp);
         *it = num;
+    }
+    else
+    {
+        keys.push_back("Content-Length");
+        values.push_back(num);
     }
 }
 
@@ -113,6 +118,11 @@ void HttpHeader::setContentType(const string &type)
     }
     if(it != values.end())
         *it = type;
+    else
+    {
+        keys.push_back("Content-Type");
+        values.push_back(type);
+    }
 }
 
 string HttpHeader::getValue(const string &key) const
