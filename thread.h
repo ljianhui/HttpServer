@@ -3,6 +3,7 @@
 
 #include "object.h"
 #include <pthread.h>
+#include <semaphore.h>
 
 class Thread : public Object
 {
@@ -29,6 +30,7 @@ class Thread : public Object
         Thread& operator=(const Thread &trd){return *this;}
 
         pthread_t tid;
+        sem_t finished_sem;
         int flag;
         volatile bool is_running;
         void *tret;

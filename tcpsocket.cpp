@@ -12,15 +12,12 @@ TcpSocket::TcpSocket(int protocotol, Object *parent):
     ;
 }
 
-TcpSocket::TcpSocket(const TcpSocket &tcp):
-    Socket(tcp)
+TcpSocket::TcpSocket(const TcpSocket &tcp)
 {
     ;
 }
 
 TcpSocket& TcpSocket::operator=(const TcpSocket &tcp)
 {
-    if(this != &tcp)
-        Socket::operator=(tcp);
     return *this;
 }

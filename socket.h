@@ -14,8 +14,6 @@ class Socket: public Object
         Socket(Object *parent = NULL);
         Socket(int domain, int type, int protocol = 0,
                Object *parent = NULL);
-        Socket(const Socket &socket);
-        Socket& operator=(const Socket &socket);
         virtual ~Socket();
 
         void initSocket(int domain, int type, int protocol = 0);
@@ -36,10 +34,12 @@ class Socket: public Object
         inline short int getLocalPort();
         inline short int getPeerPort();
 
-        inline const sockaddr* getPeerAddress(int *len = NULL);
-        inline const sockaddr* getLocalAddress(int *len = NULL);
+        const sockaddr* getPeerAddress(int *len = NULL);
+        const sockaddr* getLocalAddress(int *len = NULL);
 
     private:
+        Socket(const Socket &socket);
+        Socket& operator=(const Socket &socket);
         void _assign(const Socket &socket);
 
         int local_sockfd;
@@ -72,24 +72,6 @@ short int Socket::getPeerPort()
     if(res == 0)
         return ntohs(address.sin_port);
     return -1;
-}
-
-const sockaddr* Socket::getLocalAddress(int *len)
-{
-    socklen_t addr_len = sizeof(address);
-    int res = getsockname(local_sockfd, (sockaddr*)&address, &addr_len);
-    if(res == 0)
-        return (const sockaddr*)&address;
-    return NULL;
-}
-
-const sockaddr* Socket::getPeerAddress(int *len)
-{
-    socklen_t addr_len = sizeof(address);
-    int res = getpeername(local_sockfd, (sockaddr*)&address, &addr_len);
-    if(res == 0)
-        return (const sockaddr*)&address;
-    return NULL;
 }
 
 

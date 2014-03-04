@@ -9,9 +9,11 @@ class TcpSocket: public Socket
     public:
         TcpSocket(Object *parent = NULL);
         TcpSocket(int protocol, Object *parent = NULL);
+        ~TcpSocket(){}
+
+    private:
         TcpSocket(const TcpSocket &tcpsocket);
         TcpSocket& operator=(const TcpSocket &tcpsocket);
-        ~TcpSocket(){}
 };
 
 #endif // TCPSOCKET_H_INCLUDED

@@ -1,9 +1,9 @@
-#include "socket.h"
-#include <stdlib.h>
 #include <unistd.h>
+#include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
 #include <arpa/inet.h>
+#include "socket.h"
 
 Socket::Socket(Object *parent):
     Object(parent),
@@ -114,4 +114,26 @@ void Socket::_assign(const Socket &socket)
 {
     local_sockfd = socket.local_sockfd;
     address = socket.address;
+}
+
+const sockaddr* Socket::getLocalAddress(int *len)
+{
+    socklen_t addr_len = sizeof(address);
+    int res = getsockname(local_sockfd, (sockaddr*)&address, &addr_len);
+    if(len != NULL)
+        *len = addr_len;
+    if(res == 0)
+        return (const sockaddr*)&address;
+    return NULL;
+}
+
+const sockaddr* Socket::getPeerAddress(int *len)
+{
+    socklen_t addr_len = sizeof(address);
+    int res = getpeername(local_sockfd, (sockaddr*)&address, &addr_len);
+    if(len != NULL)
+        *len = addr_len;
+    if(res == 0)
+        return (const sockaddr*)&address;
+    return NULL;
 }

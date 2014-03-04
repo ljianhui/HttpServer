@@ -9,8 +9,8 @@ COPTIONS=-lpthread
 #Include
 INCLUED =
 
-myhttp: main.o object.o mutex.o socket.o thread.o tcpsocket.o httpheader.o httprequestheader.o
-	$(CC) -o myhttp main.o object.o  mutex.o socket.o thread.o tcpsocket.o httpheader.o httprequestheader.o $(COPTIONS)
+myhttp: main.o object.o mutex.o socket.o thread.o tcpsocket.o httpheader.o httprequestheader.o http.o
+	$(CC) -o myhttp main.o object.o  mutex.o socket.o thread.o tcpsocket.o httpheader.o httprequestheader.o http.o  $(COPTIONS)
 
 main.o: main.cpp object.h mutex.h socket.h thread.h tcpsocket.h
 	$(CC) -c main.cpp $(COPTIONS)
@@ -36,5 +36,7 @@ httpheader.o: httpheader.cpp httpheader.h object.h
 httprequestheader.o: httprequestheader.cpp httprequestheader.h httpheader.h
 	$(CC) -c httprequestheader.cpp
 
+http.o: http.cpp http.h object.h tcpsocket.h httprequestheader.h httpresponseheader.h
+	$(CC) -c http.cpp
 clean:
 	-rm -f *.o
