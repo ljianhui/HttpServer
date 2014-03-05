@@ -28,8 +28,9 @@ class Http : public Object
         int response(const HttpResponseHeader &header,
                      const char *data, size_t data_len);
 
-        int getStatusCode()const;
-        string getStatusPhrase()const;
+        inline int getStatusCode()const;
+        inline string getStatusPhrase()const;
+        inline int getBufferSize()const;
 
     private:
         Http(const Http &http){}
@@ -44,5 +45,20 @@ class Http : public Object
         string phrase;
         TcpSocket *tcp_ptr;
 };
+
+int Http::getStatusCode()const
+{
+    return status_code;
+}
+
+string Http::getStatusPhrase()const
+{
+    return phrase;
+}
+
+int Http::getBufferSize()const
+{
+    return buff_size;
+}
 
 #endif // HTTP_H_INCLUDED

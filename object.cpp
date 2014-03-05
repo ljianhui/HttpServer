@@ -25,7 +25,7 @@ Object& Object::operator=(const Object &obj)
 
 Object::~Object()
 {
-    if(this_parent != NULL)
+    if(this_parent != NULL && this_parent != this)
     {
         ObjectList::iterator it =
             find(this_parent->childern.begin(),

@@ -83,16 +83,6 @@ int Http::response(const HttpResponseHeader &header,
     return _sendData(header, data, data_len);
 }
 
-int Http::getStatusCode()const
-{
-    return status_code;
-}
-
-string Http::getStatusPhrase()const
-{
-    return phrase;
-}
-
 int Http::_sendData(const HttpHeader &header,
                     const char *data, size_t data_len)
 {
