@@ -10,17 +10,18 @@ using std::string;
 
 class HttpRequestHeader;
 class HttpResponseHeader;
+class HttpHeader;
 
 class Http : public Object
 {
     public:
         Http(Object *parent = NULL);
-        Http(const string &host, Object *parent = NULL);
-        Http(const string &host, short int port, Object *parent = NULL);
+        Http(const string &host, short int port = 80, Object *parent = NULL);
         virtual ~Http();
 
-        void setPort(int http_port = 80);
         void setBufferSize(int size);
+        void setSocket(TcpSocket* &tcp);
+        void setRequestBySocket();
         int closeHttp();
         int request(const HttpRequestHeader &header,
                     const char *data, size_t data_len);
@@ -33,13 +34,15 @@ class Http : public Object
     private:
         Http(const Http &http){}
         Http& operator=(const Http &http){return *this;}
+        int _sendData(const HttpHeader &header,
+                      const char *data, size_t data_len);
 
-        int port;
+        short int port;
         char *buffer;
         int buff_size;
+        int status_code;
+        string phrase;
         TcpSocket *tcp_ptr;
-        HttpRequestHeader *req_header;
-        HttpResponseHeader *res_header;
 };
 
 #endif // HTTP_H_INCLUDED

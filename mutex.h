@@ -4,7 +4,7 @@
 #include "object.h"
 #include <pthread.h>
 
-class Mutex: public Object
+class Mutex : public Object
 {
     public:
         Mutex(Object *parent = NULL);
