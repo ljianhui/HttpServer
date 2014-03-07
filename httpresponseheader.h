@@ -27,7 +27,7 @@ class HttpResponseHeader : public HttpHeader
 
         void setResponse(int code, const string &txt,
                          int major_version, int minor_version);
-
+        void setResponse(const string &header);
         virtual string toString()const;
 
     private:

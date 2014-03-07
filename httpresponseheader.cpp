@@ -15,18 +15,7 @@ HttpResponseHeader::HttpResponseHeader(Object *parent):
 HttpResponseHeader::HttpResponseHeader(const string &header, Object *parent):
     HttpHeader(parent)
 {
-    string math(" ");
-    int begin_pos = 0;
-    begin_pos = _setString(header, math, begin_pos, version);
-    string tmp;
-    begin_pos = _setString(header, math, begin_pos, tmp);
-    status_code = atoi(tmp.c_str());
-    math = "\r\n";
-    begin_pos = _setString(header, math, begin_pos, phrase);
-
-    _cstringToHttpheader(header.c_str()+begin_pos);
-
-    _versionToInt(version, major_ver, minor_ver);
+    setResponse(header);
 }
 
 HttpResponseHeader::HttpResponseHeader(int code, const string &txt,
@@ -89,6 +78,22 @@ void HttpResponseHeader::setResponse(int code, const string &txt,
     major_ver = major_version;
     minor_ver = minor_version;
     version = _intToVersion(major_ver, minor_ver);
+}
+
+void HttpResponseHeader::setResponse(const string &header)
+{
+    string math(" ");
+    int begin_pos = 0;
+    begin_pos = _setString(header, math, begin_pos, version);
+    string tmp;
+    begin_pos = _setString(header, math, begin_pos, tmp);
+    status_code = atoi(tmp.c_str());
+    math = "\r\n";
+    begin_pos = _setString(header, math, begin_pos, phrase);
+
+    _cstringToHttpheader(header.c_str()+begin_pos);
+
+    _versionToInt(version, major_ver, minor_ver);
 }
 
 string HttpResponseHeader::toString()const

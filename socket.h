@@ -23,10 +23,10 @@ class Socket: public Object
         int connectToHost();
         int closeSocket();
 
-        void setSocketAddress(short int family, unsigned short int port,
-                              const char *hostname);
-        void setSocketAddress(short int family, unsigned short int port,
-                              unsigned long int address);
+        void setSocketAddress(short int family, const char *hostname,
+                              unsigned short int port);
+        void setSocketAddress(short int family, unsigned long int address,
+                              unsigned short int port);
 
         inline int sendData(const char *data, int data_size)const;
         inline int receiveData(char *buffer, int buff_size)const;
@@ -34,8 +34,8 @@ class Socket: public Object
         inline short int getLocalPort();
         inline short int getPeerPort();
 
-        const sockaddr* getPeerAddress(int *len = NULL);
-        const sockaddr* getLocalAddress(int *len = NULL);
+        int getPeerAddress(sockaddr *addr)const;
+        int getLocalAddress(sockaddr *addr)const;
 
     private:
         Socket(const Socket &socket);

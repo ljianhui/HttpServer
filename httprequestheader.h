@@ -27,6 +27,7 @@ class HttpRequestHeader : public HttpHeader
 
         void setRequest(const string &method, const string &url,
                         int major_version, int minor_version);
+        void setRequest(const string &header);
 
         virtual string toString()const;
     private:

@@ -3,8 +3,8 @@
 
 #include <map>
 #include <string>
-#include "tcpsocket.h"
 #include "object.h"
+#include "tcpsocket.h"
 
 using std::string;
 
@@ -27,6 +27,8 @@ class Http : public Object
                     const char *data, size_t data_len);
         int response(const HttpResponseHeader &header,
                      const char *data, size_t data_len);
+
+        inline int receiveData(char *data, int data_len);
 
         inline int getStatusCode()const;
         inline string getStatusPhrase()const;
@@ -59,6 +61,11 @@ string Http::getStatusPhrase()const
 int Http::getBufferSize()const
 {
     return buff_size;
+}
+
+int Http::receiveData(char *data, int data_len)
+{
+    return tcp_ptr->receiveData(data, data_len);
 }
 
 #endif // HTTP_H_INCLUDED

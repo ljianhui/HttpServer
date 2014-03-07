@@ -67,7 +67,7 @@ int Socket::listen(int backlog)
 
 int Socket::accept(Socket &acc_sock)
 {
-    bzero(&acc_sock, sizeof(acc_sock));
+    bzero(&acc_sock.address, sizeof(acc_sock.address));
     acc_sock.local_sockfd = -1;
 
     acc_sock.local_sockfd = ::accept(local_sockfd, NULL, NULL);
@@ -89,21 +89,20 @@ int Socket::closeSocket()
     {
         res = close(local_sockfd);
         local_sockfd = -1;
-        return res;
     }
     return res;
 }
 
-void Socket::setSocketAddress(short int family, unsigned short int port,
-                              const char *hostname)
+void Socket::setSocketAddress(short int family, const char *hostname,
+                              unsigned short int port)
 {
     address.sin_family = family;
     address.sin_port = htons(port);
     inet_pton(family, hostname, &address.sin_addr);
 }
 
-void Socket::setSocketAddress(short int family, unsigned short int port,
-                              unsigned long int addr)
+void Socket::setSocketAddress(short int family, unsigned long int addr,
+                              unsigned short int port)
 {
     address.sin_family = family;
     address.sin_port = htons(port);
@@ -116,24 +115,24 @@ void Socket::_assign(const Socket &socket)
     address = socket.address;
 }
 
-const sockaddr* Socket::getLocalAddress(int *len)
+int Socket::getLocalAddress(sockaddr *addr)const
 {
-    socklen_t addr_len = sizeof(address);
-    int res = getsockname(local_sockfd, (sockaddr*)&address, &addr_len);
-    if(len != NULL)
-        *len = addr_len;
+    if(addr == NULL)
+        return -1;
+    socklen_t addr_len = sizeof(*addr);
+    int res = getsockname(local_sockfd, addr, &addr_len);
     if(res == 0)
-        return (const sockaddr*)&address;
-    return NULL;
+        return addr_len;
+    return -1;
 }
 
-const sockaddr* Socket::getPeerAddress(int *len)
+int Socket::getPeerAddress(sockaddr *addr)const
 {
-    socklen_t addr_len = sizeof(address);
-    int res = getpeername(local_sockfd, (sockaddr*)&address, &addr_len);
-    if(len != NULL)
-        *len = addr_len;
+    if(addr == NULL)
+        return -1;
+    socklen_t addr_len = sizeof(*addr);
+    int res = getpeername(local_sockfd, addr, &addr_len);
     if(res == 0)
-        return (const sockaddr*)&address;
-    return NULL;
+        return addr_len;
+    return -1;
 }

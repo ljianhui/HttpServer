@@ -230,12 +230,16 @@ string HttpHeader::toString() const
 
 void HttpHeader::_cstringToHttpheader(const char *header)
 {
-    char div[] = ":";
+    if(header == NULL)
+        return;
+
+    char div[] = ": ";
     char end[] = "\r\n";
+    is_vaild = true;
     while(*header != '\r')
     {
         const char *str = strstr(header, div);
-        if(str == NULL || *(str+1) != ' ')
+        if(str == NULL)
         {
             is_vaild = false;
             break;
@@ -257,7 +261,6 @@ void HttpHeader::_cstringToHttpheader(const char *header)
 
         header = str + 2;
     }
-    is_vaild = true;
 }
 
 void HttpHeader::_assign(const HttpHeader &header)

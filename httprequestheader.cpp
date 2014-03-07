@@ -36,17 +36,7 @@ void HttpRequestHeader::_assignRequest(const HttpRequestHeader &header)
 HttpRequestHeader::HttpRequestHeader(const string &header, Object *parent):
     HttpHeader(parent)
 {
-    string math(" ");
-    int begin_pos = 0;
-    begin_pos = _setString(header, math, begin_pos, req_method);
-    begin_pos = _setString(header, math, begin_pos, req_url);
-    math = "\r\n";
-    begin_pos = _setString(header, math, begin_pos, version);//version = "HTTP/1.1"
-
-    _cstringToHttpheader(header.c_str() + begin_pos);
-
-    _versionToInt(version, major_ver, minor_ver);
-
+    setRequest(header);
 }
 
 HttpRequestHeader::HttpRequestHeader(const HttpRequestHeader &header):
@@ -87,6 +77,20 @@ void HttpRequestHeader::setRequest(const string &method, const string &url,
     major_ver = major_version;
     minor_ver = minor_version;
     version = _intToVersion(major_ver, minor_ver);
+}
+
+void HttpRequestHeader::setRequest(const string &header)
+{
+    string math(" ");
+    int begin_pos = 0;
+    begin_pos = _setString(header, math, begin_pos, req_method);
+    begin_pos = _setString(header, math, begin_pos, req_url);
+    math = "\r\n";
+    begin_pos = _setString(header, math, begin_pos, version);//version = "HTTP/1.1"
+
+    _cstringToHttpheader(header.c_str() + begin_pos);
+
+    _versionToInt(version, major_ver, minor_ver);
 }
 
 string HttpRequestHeader::toString()const

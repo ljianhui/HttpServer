@@ -1,5 +1,6 @@
 #include <string.h>
 #include "http.h"
+#include "tcpsocket.h"
 #include "httprequestheader.h"
 #include "httpresponseheader.h"
 
@@ -23,7 +24,7 @@ Http::Http(const string &host, short int http_port, Object *parent):
     tcp_ptr(NULL)
 {
     tcp_ptr = new TcpSocket(this);
-    tcp_ptr->setSocketAddress(AF_INET, http_port, host.c_str());
+    tcp_ptr->setSocketAddress(AF_INET, host.c_str(), http_port);
     tcp_ptr->connectToHost();
 }
 
