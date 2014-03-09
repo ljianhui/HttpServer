@@ -1,14 +1,12 @@
 #ifndef THREAD_H_INCLUDED
 #define THREAD_H_INCLUDED
 
-#include "object.h"
 #include <pthread.h>
-#include <semaphore.h>
+#include "object.h"
 
 class Thread : public Object
 {
     public:
-        friend void* Run(void *arg);
         Thread(Object *parent = NULL);
         virtual ~Thread();
 
@@ -17,7 +15,7 @@ class Thread : public Object
         inline int cancel();
         inline bool isRunning() const;
         inline bool isFinished() const;
-        inline void* getThreadReturn() const;
+        inline int getThreadReturn() const;
 
         inline bool operator==(const Thread &trd);
         inline bool operator!=(const Thread &trd);
@@ -28,18 +26,20 @@ class Thread : public Object
     private:
         Thread(const Thread &trd){}
         Thread& operator=(const Thread &trd){return *this;}
+        static void* _threadfunc(void *arg);
 
         pthread_t tid;
-        sem_t finished_sem;
         int flag;
-        volatile bool is_running;
-        void *tret;
+        bool is_running;
+        int tret;
 };
 
 void Thread::exit(int exit_code)
 {
-    if(flag == 0)
-        pthread_exit((void*) exit_code);
+    if(flag != 0)
+        return;
+
+    pthread_exit((void*)exit_code);
 }
 
 int Thread::cancel()
@@ -51,8 +51,9 @@ int Thread::cancel()
 
 int Thread::wait()
 {
+    void *tmp = &tret;
     if(flag == 0)
-        return pthread_join(tid, &tret);
+        return pthread_join(tid, (void**) &tmp);
     return -1;
 }
 
@@ -66,7 +67,7 @@ bool Thread::isFinished() const
     return !is_running;
 }
 
-void* Thread::getThreadReturn() const
+int Thread::getThreadReturn() const
 {
     return tret;
 }

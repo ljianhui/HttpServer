@@ -15,23 +15,36 @@ using namespace std;
 
 //int argc, char *argv[]
 
+void* func(void *arg)
+{
+    cout << "func" << *(int*)arg << endl;
+    sleep(2);
+    cout << "func" << *(int*)arg << endl;
+    pthread_exit(NULL);
+}
+
 class ThreadA : public Thread
 {
-    public:
-        void run()
-        {
-            cout << "ThreadA is running" << endl;
-        }
+    protected:
+        virtual void run();
+
 };
+
+void ThreadA::run()
+{
+    cout << "ThreadA is running" << endl;
+}
 
 class ThreadB : public Thread
 {
-    public:
-        void run()
-        {
-            cout << "ThreadB is running" << endl;
-        }
+    protected:
+        virtual void run();
 };
+
+void ThreadB::run()
+{
+    cout << "ThreadB is running" << endl;
+}
 
 int main()
 {
@@ -164,10 +177,28 @@ int main()
     for(int i = 0; i < 10; ++i)
     {
         ThreadA tha;
-        //sleep(1);
         ThreadB thb;
-        sleep(1);
+//        sleep(1);
     }
+    sleep(3);
+
+//    pthread_t tid[10];
+//    for(int i = 0; i < 10; ++i)
+//    {
+//        pthread_create(&tid[i], NULL, func, NULL);
+//    }
+//    for(int i = 0; i < 10; ++i)
+//    {
+//        pthread_join(tid[i], NULL);
+//    }
+
+//    pthread_t tid;
+//
+//    int i = 0;
+//    pthread_create(&tid, NULL, func, &i);
+//    sleep(1);
+//    i = 2;
+//    pthread_join(tid, NULL);
     return 0;
 
 }
