@@ -10,8 +10,10 @@
 #include "tcpsocket.h"
 #include "socket.h"
 #include "thread.h"
+#include "commonfunction.h"
 
 using namespace std;
+//using CommonFunction::GetCurrentTime;
 
 //int argc, char *argv[]
 
@@ -32,6 +34,7 @@ class ThreadA : public Thread
 
 void ThreadA::run()
 {
+    sleep(1);
     cout << "ThreadA is running" << endl;
 }
 
@@ -43,8 +46,28 @@ class ThreadB : public Thread
 
 void ThreadB::run()
 {
+    sleep(1);
     cout << "ThreadB is running" << endl;
 }
+
+class Test
+{
+    public:
+    Test()
+    {
+        n = 10;
+    }
+    int getN()const
+    {
+        return n;
+    }
+    ~Test()
+    {
+        sleep(10);
+    }
+    private:
+    int n;
+};
 
 int main()
 {
@@ -82,17 +105,17 @@ int main()
 	socklen_t client_len = 0;
 	struct sockaddr_in server_addr;
 	struct sockaddr_in client_addr;
-	//\u521b\u5efa\u5957\u63a5\u5b57
+
 	server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
 
-	server_addr.sin_family = AF_INET;//\u6307\u5b9a\u7f51\u7edc\u5957\u63a5\u5b57
-	server_addr.sin_addr.s_addr = htons(INADDR_ANY);//\u63a5\u53d7\u6240\u6709IP\u5730\u5740\u7684\u8fde\u63a5
-	server_addr.sin_port = htons(80);//\u7ed1\u5b9a\u52309736\u7aef\u53e3
-	//\u7ed1\u5b9a\uff08\u547d\u540d\uff09\u5957\u63a5\u5b57
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_addr.s_addr = htons(INADDR_ANY);
+	server_addr.sin_port = htons(80);
+
 	bind(server_sockfd, (struct sockaddr*)&server_addr, sizeof(server_addr));
-	//\u521b\u5efa\u5957\u63a5\u5b57\u961f\u5217\uff0c\u76d1\u542c\u5957\u63a5\u5b57
+
 	listen(server_sockfd, 5);
-	//\u5ffd\u7565\u5b50\u8fdb\u7a0b\u505c\u6b62\u6216\u9000\u51fa\u4fe1\u53f7
+
 	signal(SIGCHLD, SIG_IGN);
 
 	while(1)
@@ -100,12 +123,11 @@ int main()
 		string data;
 		client_len = sizeof(client_addr);
 		printf("Server waiting\n");
-		//\u63a5\u53d7\u8fde\u63a5\uff0c\u521b\u5efa\u65b0\u7684\u5957\u63a5\u5b57
+
 		client_sockfd = accept(server_sockfd, (struct sockaddr*)&client_addr, &client_len);
 
 		if(fork() == 0)
 		{
-			//\u5b50\u8fdb\u7a0b\u4e2d\uff0c\u8bfb\u53d6\u5ba2\u6237\u7aef\u53d1\u8fc7\u6765\u7684\u4fe1\u606f\uff0c\u5904\u7406\u4fe1\u606f\uff0c\u518d\u53d1\u9001\u7ed9\u5ba2\u6237\u7aef
 			const int buff_size = 1024;
 			char buffer[buff_size + 1];
 			int read_bytes = 0;
@@ -119,11 +141,11 @@ int main()
 		}
 		else
 		{
-			//\u7236\u8fdb\u7a0b\u4e2d\uff0c\u5173\u95ed\u5957\u63a5\u5b57
 			close(client_sockfd);
 		}
 	}
 */
+
 
 //    TcpSocket tcp;
 //    tcp.setSocketAddress(AF_INET, INADDR_ANY, 80);
@@ -174,13 +196,20 @@ int main()
     }
 */
 
-    for(int i = 0; i < 10; ++i)
-    {
-        ThreadA tha;
-        ThreadB thb;
+//    for(int i = 0; i < 10; ++i)
+//    {
+////        ThreadA *tha = new ThreadA;
+////        ThreadB *thb = new ThreadB;
+////        delete tha;
+////        delete thb;
+//        ThreadA tha;
+//        ThreadB thb;
+//        tha.wait();
+//        thb.wait();
 //        sleep(1);
-    }
-    sleep(3);
+//    }
+//    cout << "For end" << endl;
+//    sleep(3);
 
 //    pthread_t tid[10];
 //    for(int i = 0; i < 10; ++i)
@@ -193,12 +222,29 @@ int main()
 //    }
 
 //    pthread_t tid;
-//
 //    int i = 0;
 //    pthread_create(&tid, NULL, func, &i);
 //    sleep(1);
 //    i = 2;
+//    sleep(10);
 //    pthread_join(tid, NULL);
+
+//    Test *tp = NULL;
+//    {
+//        Test *t = new Test;
+//        tp = t;
+//        delete t;
+//    }
+//    int a = 11;
+//    int b = 12;
+//    int c = 13;
+//    cout << tp->getN() << endl;
+
+    int n = 10;
+    cout << CommonFunction::IntToString(n)<<endl;
+    string s = "100";
+    cout << CommonFunction::StringToInt(s) << endl;
+    cout << CommonFunction::GetCurrentTime() << endl;
     return 0;
 
 }

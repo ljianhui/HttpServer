@@ -24,7 +24,7 @@ void* Thread::_threadfunc(void *arg)
 {
     if(arg == NULL)
         return NULL;
-    Thread *thread = (Thread*)(arg);
+    Thread *thread = static_cast<Thread*>(arg);
     thread->is_running = true;
     thread->run();
     thread->is_running = false;

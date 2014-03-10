@@ -31,7 +31,7 @@ class Thread : public Object
         pthread_t tid;
         int flag;
         bool is_running;
-        int tret;
+        void *tret;
 };
 
 void Thread::exit(int exit_code)
@@ -51,9 +51,8 @@ int Thread::cancel()
 
 int Thread::wait()
 {
-    void *tmp = &tret;
     if(flag == 0)
-        return pthread_join(tid, (void**) &tmp);
+        return pthread_join(tid, &tret);
     return -1;
 }
 
@@ -69,7 +68,7 @@ bool Thread::isFinished() const
 
 int Thread::getThreadReturn() const
 {
-    return tret;
+    return (int)(tret);
 }
 
 bool Thread::operator==(const Thread &trd)
