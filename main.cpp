@@ -240,11 +240,11 @@ int main()
 //    int c = 13;
 //    cout << tp->getN() << endl;
 
-    int n = 10;
-    cout << CommonFunction::IntToString(n)<<endl;
-    string s = "100";
-    cout << CommonFunction::StringToInt(s) << endl;
-    cout << CommonFunction::GetCurrentTime() << endl;
+//    int n = 10;
+//    cout << CommonFunction::IntToString(n)<<endl;
+//    string s = "100";
+//    cout << CommonFunction::StringToInt(s) << endl;
+//    cout << CommonFunction::CurrentTime() << endl;
     return 0;
 
 }

@@ -12,7 +12,8 @@ Thread::Thread(Object *parent):
 
 Thread::~Thread()
 {
-    pthread_join(tid, NULL);
+    if(is_running == true)
+        pthread_exit(NULL);
 }
 
 void Thread::run()
