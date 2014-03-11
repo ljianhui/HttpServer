@@ -23,14 +23,9 @@ class ServerThread : public Thread
 
         virtual void run();
 
-        void processGetCommon(const char *data, int data_len);
-        string getFileName()const;
-
     private:
         ServerThread(const ServerThread &sthread){}
         ServerThread& operator=(const ServerThread &sthread){return *this;}
-        FILE* _openFile(const string &filename)const;
-        int _getFileSize(FILE *file);
 
         Http http;
         HttpRequestHeader *req_ptr;

@@ -17,6 +17,7 @@ class LogFile : public Object
         void open(const string &filename);
         void addLog(const string &data);
         void addLog(const char *data, size_t data_len);
+        void close();
     private:
         LogFile(const LogFile &log){}
         LogFile& operator=(const LogFile &log){return *this;}

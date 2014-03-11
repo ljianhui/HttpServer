@@ -38,3 +38,20 @@ size_t CommonFunction::FileLength(ifstream &file)
     file.seekg(current_pos);
     return len;
 }
+
+string CommonFunction::FileName(const string &path)
+{
+    size_t pos = path.find_last_of("/");
+    if(pos == string::npos)
+        return string("");
+
+    return path.substr(pos+1);
+}
+
+string CommonFunction::FileType(const string &filename)
+{
+    size_t pos = filename.find_last_of(".");
+    if(pos == string::npos)
+        return string("");
+    return filename.substr(pos+1);
+}

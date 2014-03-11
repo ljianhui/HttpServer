@@ -12,6 +12,8 @@ namespace CommonFunction
     string IntToString(int n);
     string CurrentTime();
     size_t FileLength(std::ifstream &file);
+    string FileName(const string &path);
+    string FileType(const string &filename);
 }
 
 #endif // COMMONFUNCTION_H_INCLUDED

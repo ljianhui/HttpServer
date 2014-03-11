@@ -11,6 +11,7 @@
 #include "socket.h"
 #include "thread.h"
 #include "commonfunction.h"
+#include "logfile.h"
 
 using namespace std;
 //using CommonFunction::GetCurrentTime;
@@ -245,6 +246,15 @@ int main()
 //    string s = "100";
 //    cout << CommonFunction::StringToInt(s) << endl;
 //    cout << CommonFunction::CurrentTime() << endl;
+
+//    LogFile logfile;
+//    logfile.addLog("first data\n");
+//    logfile.open("logfile");
+//    logfile.addLog("second data\n");
+
+    string path = "/root/bin/file.c";
+    cout << CommonFunction::FileName(path) << endl;
+    cout << CommonFunction::FileType(path) << endl;
     return 0;
 
 }

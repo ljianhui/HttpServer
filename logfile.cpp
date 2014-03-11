@@ -28,8 +28,7 @@ void LogFile::open(const string &filename)
 {
     if(log_file.is_open())
     {
-        log_file.close();
-        log_file.clear();
+        this->close();
     }
     log_file.open(filename.c_str(), ios::app);
 }
@@ -47,4 +46,10 @@ void LogFile::addLog(const char *data, size_t data_len)
     if(!log_file)
         return;
     log_file.write(data, data_len);
+}
+
+void LogFile::close()
+{
+    log_file.close();
+    log_file.clear();
 }

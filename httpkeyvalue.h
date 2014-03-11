@@ -3,7 +3,6 @@
 
 #include <map>
 #include <string>
-#include "object.h"
 #include "mutex.h"
 
 using std::string;
