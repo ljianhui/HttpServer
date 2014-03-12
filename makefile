@@ -1,4 +1,4 @@
-all: myhttp
+all: MyHttpServer
 
 # Which compiler
 CC=g++
@@ -12,10 +12,10 @@ INCLUED =
 #Objfiles
 OBJFILE=main.o object.o mutex.o socket.o thread.o tcpsocket.o httpheader.o httprequestheader.o http.o logfile.o commonfunction.o httpkeyvalue.o httpresponseheader.o
 
-myhttp: $(OBJFILE) 
-	$(CC) -o myhttp $(OBJFILE) $(COPTIONS) 
+MyHttpServer: $(OBJFILE) 
+	$(CC) -o MyHttpServer $(OBJFILE) $(COPTIONS) 
 
-main.o: main.cpp object.h mutex.h socket.h thread.h tcpsocket.h
+main.o: main.cpp tcpsocket.h httprequestheader.h httpresponseheader.h httpkeyvalue.h commonfunction.h
 	$(CC) -c main.cpp $(COPTIONS)
 
 commonfunction.o: commonfunction.h commonfunction.cpp

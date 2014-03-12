@@ -1,6 +1,7 @@
 #include <time.h>
 #include <sstream>
 #include <stdlib.h>
+#include <string.h>
 #include "commonfunction.h"
 
 using std::stringstream;
@@ -25,9 +26,13 @@ string CommonFunction::CurrentTime()
 {
     time_t current_time;
     time(&current_time);
-    stringstream stream;
-    stream << asctime(gmtime(&current_time));
-    return stream.str();
+    char *time;
+    time = asctime(gmtime(&current_time));
+    int len = strlen(time);
+    time[len-1] = ' ';
+    string fin_time(time);
+    fin_time += "GMT";
+    return fin_time;
 }
 
 size_t CommonFunction::FileLength(ifstream &file)

@@ -48,12 +48,12 @@ class Socket: public Object
 
 int Socket::sendData(const char *data, int data_size)const
 {
-    return write(local_sockfd, data, data_size);
+    return send(local_sockfd, data, data_size, 0);
 }
 
 int Socket::receiveData(char *buffer, int buff_size)const
 {
-    return read(local_sockfd, buffer, buff_size);
+    return recv(local_sockfd, buffer, buff_size, MSG_DONTWAIT);
 }
 
 short int Socket::getLocalPort()

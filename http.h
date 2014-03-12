@@ -25,9 +25,11 @@ class Http : public Object
         int closeHttp();
         int request(const HttpRequestHeader &header,
                     const char *data, size_t data_len);
+
+        int request(const string &header, const char *data, size_t data_len);
         int response(const HttpResponseHeader &header,
                      const char *data, size_t data_len);
-
+        int response(const string &header, const char *data, size_t data_len);
         inline int receiveData(char *data, int data_len);
 
         inline int getStatusCode()const;
@@ -37,12 +39,12 @@ class Http : public Object
     private:
         Http(const Http &http){}
         Http& operator=(const Http &http){return *this;}
-        int _sendData(const HttpHeader &header,
-                      const char *data, size_t data_len);
+
+        int _sendData(const string &header, const char *data, size_t data_len);
 
         short int port;
         char *buffer;
-        int buff_size;
+        size_t buff_size;
         int status_code;
         string phrase;
         TcpSocket *tcp_ptr;

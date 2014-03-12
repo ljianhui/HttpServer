@@ -51,7 +51,7 @@ int Mutex::unlock()
 {
     if(flag == 0)
     {
-        return pthread_mutex_lock(&mutex);
+        return pthread_mutex_unlock(&mutex);
     }
     return -1;
 }

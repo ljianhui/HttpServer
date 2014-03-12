@@ -7,7 +7,6 @@ Thread::Thread(Object *parent):
     is_running(false),
     tret(0)
 {
-    flag = pthread_create(&tid, NULL, _threadfunc, this);
 }
 
 Thread::~Thread()

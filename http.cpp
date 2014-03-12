@@ -70,8 +70,15 @@ int Http::request(const HttpRequestHeader &header,
 {
     if(tcp_ptr == NULL || data == NULL)
         return -1;
-    return _sendData(header, data, data_len);
+    return _sendData(header.toString(), data, data_len);
 
+}
+
+int Http::request(const string &header, const char *data, size_t data_len)
+{
+    if(tcp_ptr == NULL || data == NULL)
+        return -1;
+    return _sendData(header, data, data_len);
 }
 
 int Http::response(const HttpResponseHeader &header,
@@ -81,20 +88,28 @@ int Http::response(const HttpResponseHeader &header,
         return -1;
     status_code = header.getStatusCode();
     phrase = header.getReasonPhrase();
+    return _sendData(header.toString(), data, data_len);
+}
+
+int Http::response(const string &header, const char *data, size_t data_len)
+{
+    if(tcp_ptr == NULL || data == NULL)
+        return -1;
+
     return _sendData(header, data, data_len);
 }
 
-int Http::_sendData(const HttpHeader &header,
-                    const char *data, size_t data_len)
+int Http::_sendData(const string &header, const char *data, size_t data_len)
 {
-    string tmp = header.toString();
-    int tmp_len = tmp.length();
-    if(buff_size < tmp_len + data_len)
+    int header_len = header.length();
+    if(buff_size < header_len + data_len)
         return -1;
 
-    memcpy(buffer, tmp.c_str(), tmp_len);
-    memcpy(buffer + tmp_len, data, data_len);
-    int send_len = tcp_ptr->sendData(buffer, tmp_len + data_len);
+    memcpy(buffer, header.c_str(), header_len);
+    if(data != NULL)
+        memcpy(buffer + header_len, data, data_len);
+    int send_len = tcp_ptr->sendData(buffer, header_len + data_len);
+
     return send_len;
 }
 

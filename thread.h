@@ -10,6 +10,7 @@ class Thread : public Object
         Thread(Object *parent = NULL);
         virtual ~Thread();
 
+        inline void start();
         inline void exit(int exit_code = 0);
         inline int wait();
         inline int cancel();
@@ -26,6 +27,7 @@ class Thread : public Object
     private:
         Thread(const Thread &trd){}
         Thread& operator=(const Thread &trd){return *this;}
+
         static void* _threadfunc(void *arg);
 
         pthread_t tid;
@@ -33,6 +35,12 @@ class Thread : public Object
         bool is_running;
         void *tret;
 };
+
+void Thread::start()
+{
+    if(!is_running)
+        flag = pthread_create(&tid, NULL, _threadfunc, this);
+}
 
 void Thread::exit(int exit_code)
 {

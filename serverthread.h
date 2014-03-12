@@ -27,6 +27,9 @@ class ServerThread : public Thread
         ServerThread(const ServerThread &sthread){}
         ServerThread& operator=(const ServerThread &sthread){return *this;}
 
+        void _processGetMethod();
+        void _recvRequest(string &data);
+
         Http http;
         HttpRequestHeader *req_ptr;
         HttpResponseHeader *res_ptr;
