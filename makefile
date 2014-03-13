@@ -54,7 +54,21 @@ http.o: http.cpp http.h object.h tcpsocket.h httprequestheader.h httpresponsehea
 httpkeyvalue.o: httpkeyvalue.h httpkeyvalue.cpp mutex.h
 	$(CC) -c httpkeyvalue.cpp $(COPTIONS)
 
-httpserver.o: httpserver.h httpserver.cpp tcpsocket.h http.h httprequestheader.h httpresponseheader.h
+httpserver.o: httpserver.h httpserver.cpp tcpsocket.h http.h httprequestheader.h httpresponseheader.h httpkeyvalue.h logfile.h commonfunction.h
 	$(CC) -c httpserver.cpp $(COPTIONS)
 clean:
 	-rm -f *.o
+
+install:
+	if [ -d ../MyHttpServer ]; then \
+	mv ./MyHttpServer ../MyHttpServer/MyHttpServer; \
+	else \
+	mkdir ../MyHttpServer; \
+	mv ./MyHttpServer ../MyHttpServer/MyHttpServer; \
+	fi
+
+	if [ -d ../MyHttpServer/www ]; then \
+	echo "The Dir has exist!"; \
+	else \
+	mkdir ../MyHttpServer/www; \
+	fi 

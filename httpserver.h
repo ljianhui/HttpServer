@@ -26,13 +26,19 @@ class HttpServer : public TcpSocket
         HttpServer& operator=(const HttpServer &server){return *this;}
 
         static void* _threadFunc(void *arg);
-        static void _recvRequest(Http &http, string &data);
-        static void _processGet(Http &http, const HttpRequestHeader &request,
+        void _recvRequest(Http &http, string &data);
+        void _processGet(Http &http, const HttpRequestHeader &request,
                          HttpResponseHeader &resopnse);
 
-        static string root_dir;
-        static string logfilename;
-        static HttpKeyValue *key_value_ptr;
+        struct Parameter
+        {
+            HttpServer *server;
+            TcpSocket *tcp;
+        };
+
+        string root_dir;
+        string logfilename;
+        HttpKeyValue *key_value_ptr;
 
 };
 

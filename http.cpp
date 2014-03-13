@@ -81,14 +81,14 @@ int Http::request(const string &header, const char *data, size_t data_len)
 int Http::response(const HttpResponseHeader &header,
                    const char *data, size_t data_len)
 {
-    if(tcp_ptr == NULL || data == NULL)
+    if(tcp_ptr == NULL)
         return -1;
     return _sendData(header.toString(), data, data_len);
 }
 
 int Http::response(const string &header, const char *data, size_t data_len)
 {
-    if(tcp_ptr == NULL || data == NULL)
+    if(tcp_ptr == NULL)
         return -1;
 
     return _sendData(header, data, data_len);

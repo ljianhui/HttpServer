@@ -6,18 +6,19 @@
 #include "httpresponseheader.h"
 #include "commonfunction.h"
 #include "httpkeyvalue.h"
+#include "logfile.h"
 
 using std::ifstream;
 
-string HttpServer::root_dir(".");
-string HttpServer::logfilename("./logfile");
-HttpKeyValue* HttpServer::key_value_ptr(HttpKeyValue::create());
+//string HttpServer::root_dir(".");
+//string HttpServer::logfilename("./logfile");
+//HttpKeyValue* HttpServer::key_value_ptr(HttpKeyValue::create());
 
 HttpServer::HttpServer(Object *parent):
-    TcpSocket(parent)
-//    root_dir("."),
-//    logfilename("/logfile"),
-//    key_value_ptr(HttpKeyValue::create())
+    TcpSocket(parent),
+    root_dir("."),
+    logfilename("/logfile"),
+    key_value_ptr(HttpKeyValue::create())
 {
 }
 
@@ -28,8 +29,12 @@ HttpServer::~HttpServer()
 
 bool HttpServer::createServer(void *arg)
 {
+    Parameter *ptr = new Parameter;
+    ptr->server = this;
+    ptr->tcp = static_cast<TcpSocket*>(arg);
+
     pthread_t tid;
-    int res = pthread_create(&tid, NULL, _threadFunc, arg);
+    int res = pthread_create(&tid, NULL, _threadFunc, ptr);
     if(res != 0)
         return false;
     return true;
@@ -42,25 +47,38 @@ void* HttpServer::_threadFunc(void *arg)
     Http http;
     string data;
 
-    TcpSocket *tcp = static_cast<TcpSocket*>(arg);
+    Parameter *parameter = static_cast<Parameter*>(arg);
+    HttpServer *server = parameter->server;
+    TcpSocket *tcp = parameter->tcp;
+
+    LogFile logfile(server->root_dir+server->logfilename);
+
     http.setSocket(tcp);
-    _recvRequest(http, data);
+    server->_recvRequest(http, data);
     request.setRequest(data);
+
+    logfile.addLog(data);
     if(request.getMethod() == "GET")
-        _processGet(http, request, response);
+        server->_processGet(http, request, response);
+    delete parameter;
     pthread_exit(NULL);
 }
 
 void HttpServer::_recvRequest(Http &http, string &data)
 {
     const int buff_size = 1024;
-    char buffer[buff_size] = {'\0'};
+    char buffer[buff_size+1] = {'\0'};
     int recv_bytes = 0;
-    while(recv_bytes >= 0)
+    while(true)
     {
         recv_bytes = http.receiveData(buffer, buff_size);
-        buffer[recv_bytes] = '\0';
-        data += buffer;
+        if(recv_bytes != -1)
+        {
+            buffer[recv_bytes] = '\0';
+            data += buffer;
+        }
+        else
+            break;
     }
 }
 
@@ -79,13 +97,16 @@ void HttpServer::_processGet(Http &http, const HttpRequestHeader &request,
     char *content = NULL;
 
     if(!filestream)
-        status_code = 404;
-    else
     {
-        file_len = CommonFunction::FileLength(filestream);
-        content = new char[file_len];
-        filestream.read(content, file_len);
+        status_code = 404;
+        string notfoundfile = root_dir + "/notfound.html";
+        filestream.open(notfoundfile.c_str());
     }
+
+    file_len = CommonFunction::FileLength(filestream);
+    content = new char[file_len];
+    filestream.read(content, file_len);
+    filestream.close();
 
     string phrase = key_value_ptr->getReasonPhrase(status_code);
 
@@ -97,7 +118,6 @@ void HttpServer::_processGet(Http &http, const HttpRequestHeader &request,
     response.addValue("Content-Length", CommonFunction::IntToString(file_len));
     response.addValue("Content-Type", content_type);
     http.response(response, content, file_len);
-    filestream.close();
     delete []content;
     content = NULL;
 }
