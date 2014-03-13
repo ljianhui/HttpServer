@@ -9,7 +9,6 @@ Http::Http(Object *parent):
     port(80),
     buffer(NULL),
     buff_size(0),
-    status_code(0),
     tcp_ptr(NULL)
 {
 
@@ -20,7 +19,6 @@ Http::Http(const string &host, short int http_port, Object *parent):
     port(http_port),
     buffer(NULL),
     buff_size(0),
-    status_code(0),
     tcp_ptr(NULL)
 {
     tcp_ptr = new TcpSocket(this);
@@ -48,14 +46,13 @@ void Http::setBufferSize(int size)
     buff_size = size;
 }
 
-void Http::setSocket(TcpSocket* &tcp)
+void Http::setSocket(TcpSocket *tcp)
 {
     if(tcp == NULL)
         return;
     if(tcp_ptr != NULL)
         delete tcp_ptr;
     tcp_ptr = tcp;
-    tcp = NULL;
 }
 
 int Http::closeHttp()
@@ -86,8 +83,6 @@ int Http::response(const HttpResponseHeader &header,
 {
     if(tcp_ptr == NULL || data == NULL)
         return -1;
-    status_code = header.getStatusCode();
-    phrase = header.getReasonPhrase();
     return _sendData(header.toString(), data, data_len);
 }
 
@@ -103,7 +98,7 @@ int Http::_sendData(const string &header, const char *data, size_t data_len)
 {
     int header_len = header.length();
     if(buff_size < header_len + data_len)
-        return -1;
+        setBufferSize(header_len + data_len + 1);
 
     memcpy(buffer, header.c_str(), header_len);
     if(data != NULL)

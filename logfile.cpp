@@ -1,4 +1,5 @@
 #include "logfile.h"
+#include "commonfunction.h"
 
 using std::ofstream;
 using std::ios;
@@ -37,7 +38,9 @@ void LogFile::addLog(const string &data)
 {
     if(!log_file)
         return;
-
+    string time = CommonFunction::CurrentTime();
+    time += "\r\n";
+    log_file.write(time.c_str(), time.length());
     log_file.write(data.c_str(), data.length());
 }
 
@@ -45,6 +48,9 @@ void LogFile::addLog(const char *data, size_t data_len)
 {
     if(!log_file)
         return;
+    string time = CommonFunction::CurrentTime();
+    time += "\r\n";
+    log_file.write(time.c_str(), time.length());
     log_file.write(data, data_len);
 }
 

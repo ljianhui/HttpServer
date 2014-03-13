@@ -10,12 +10,12 @@ COPTIONS=-lpthread
 INCLUED =
 
 #Objfiles
-OBJFILE=main.o object.o mutex.o socket.o thread.o tcpsocket.o httpheader.o httprequestheader.o http.o logfile.o commonfunction.o httpkeyvalue.o httpresponseheader.o
+OBJFILE=main.o object.o mutex.o socket.o thread.o tcpsocket.o httpheader.o httprequestheader.o http.o logfile.o commonfunction.o httpkeyvalue.o httpresponseheader.o httpserver.o
 
 MyHttpServer: $(OBJFILE) 
 	$(CC) -o MyHttpServer $(OBJFILE) $(COPTIONS) 
 
-main.o: main.cpp tcpsocket.h httprequestheader.h httpresponseheader.h httpkeyvalue.h commonfunction.h
+main.o: main.cpp httpserver.h
 	$(CC) -c main.cpp $(COPTIONS)
 
 commonfunction.o: commonfunction.h commonfunction.cpp
@@ -53,5 +53,8 @@ http.o: http.cpp http.h object.h tcpsocket.h httprequestheader.h httpresponsehea
 
 httpkeyvalue.o: httpkeyvalue.h httpkeyvalue.cpp mutex.h
 	$(CC) -c httpkeyvalue.cpp $(COPTIONS)
+
+httpserver.o: httpserver.h httpserver.cpp tcpsocket.h http.h httprequestheader.h httpresponseheader.h
+	$(CC) -c httpserver.cpp $(COPTIONS)
 clean:
 	-rm -f *.o

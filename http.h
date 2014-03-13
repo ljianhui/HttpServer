@@ -20,7 +20,7 @@ class Http : public Object
         virtual ~Http();
 
         void setBufferSize(int size);
-        void setSocket(TcpSocket* &tcp);
+        void setSocket(TcpSocket *tcp);
         void setRequestBySocket();
         int closeHttp();
         int request(const HttpRequestHeader &header,
@@ -32,8 +32,6 @@ class Http : public Object
         int response(const string &header, const char *data, size_t data_len);
         inline int receiveData(char *data, int data_len);
 
-        inline int getStatusCode()const;
-        inline string getStatusPhrase()const;
         inline int getBufferSize()const;
 
     private:
@@ -45,20 +43,8 @@ class Http : public Object
         short int port;
         char *buffer;
         size_t buff_size;
-        int status_code;
-        string phrase;
         TcpSocket *tcp_ptr;
 };
-
-int Http::getStatusCode()const
-{
-    return status_code;
-}
-
-string Http::getStatusPhrase()const
-{
-    return phrase;
-}
 
 int Http::getBufferSize()const
 {
