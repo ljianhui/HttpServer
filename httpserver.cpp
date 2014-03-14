@@ -10,14 +10,10 @@
 
 using std::ifstream;
 
-//string HttpServer::root_dir(".");
-//string HttpServer::logfilename("./logfile");
-//HttpKeyValue* HttpServer::key_value_ptr(HttpKeyValue::create());
-
 HttpServer::HttpServer(Object *parent):
     TcpSocket(parent),
     root_dir("."),
-    logfilename("/logfile"),
+    logfilename("./logfile"),
     key_value_ptr(HttpKeyValue::create())
 {
 }
