@@ -71,4 +71,10 @@ install:
 	echo "The Dir has exist!"; \
 	else \
 	mkdir ../MyHttpServer/www; \
-	fi 
+	fi
+
+	if [ -d ../MyHttpServer/log ]; then \
+	echo "The Dir has exist!"; \
+	else \
+	mkdir ../MyHttpServer/log; \
+	fi

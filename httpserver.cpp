@@ -51,13 +51,14 @@ void* HttpServer::_threadFunc(void *arg)
     HttpServer *server = parameter->server;
     TcpSocket *tcp = parameter->tcp;
 
-    LogFile logfile(server->root_dir+server->logfilename);
+    LogFile logfile(server->logfilename);
 
     http.setSocket(tcp);
     server->_recvRequest(http, data);
     request.setRequest(data);
 
     logfile.addLog(data);
+
     if(request.getMethod() == "GET")
         server->_processGet(http, request, response);
     delete parameter;
