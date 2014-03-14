@@ -1,6 +1,6 @@
 #include "httpserver.h"
 
-int main(int argc, char **argv)
+int main(int argc, char *argv[])
 {
     HttpServer server;
     if(argc > 1)
