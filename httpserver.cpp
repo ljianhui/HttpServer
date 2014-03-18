@@ -57,6 +57,8 @@ void* HttpServer::_threadFunc(void *arg)
 
     if(request.getMethod() == "GET")
         server->_processGet(http, request, response);
+
+    delete parameter->tcp;
     delete parameter;
     pthread_exit(NULL);
 }

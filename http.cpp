@@ -30,8 +30,6 @@ Http::~Http()
 {
     if(buffer != NULL)
         delete []buffer;
-    if(tcp_ptr != NULL)
-        delete tcp_ptr;
 }
 
 void Http::setBufferSize(int size)
